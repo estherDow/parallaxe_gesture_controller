@@ -9,9 +9,11 @@ class TrackState(Enum):
     STOP = "stop"
     RECORD = "record"
 
+
 class MachineState(Enum):
-     PLAY = "play"
-     STOP = "stop"
+    PLAY = "play"
+    STOP = "stop"
+
 
 @dataclass
 class Track:
@@ -22,11 +24,11 @@ class Rt505:
     play_messages = [0x00, 0x01, 0x02, 0x03, 0x04]
     record_messages = [0x05, 0x06, 0x07, 0x08, 0x09]
     stop_messages = [0x0A, 0x0B, 0x0C, 0x0D, 0x0E]
+
     def __init__(self, midi: Midi):
         self.midi = midi
         self.global_state = MachineState.STOP
         self.tracks = [Track(TrackState.STOP), Track(TrackState.STOP), Track(TrackState.STOP)]
-
 
     def play_all(self):
         self.midi.send_system_realtime_message(0xFA)
@@ -43,6 +45,7 @@ class Rt505:
             self.midi.send_control_change(Data(self.record_messages[track - 1]))
             self.tracks[track].state = TrackState.RECORD
             # todo: i have doubts if it just records until stop
+
     def play(self, track: int):
         if track <= len(self.tracks) and self.tracks[track].state != TrackState.PLAY:
             self.midi.send_control_change(Data(self.play_messages[track - 1]))
