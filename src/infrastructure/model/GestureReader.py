@@ -4,6 +4,7 @@ from collections import deque, Counter
 import numpy as np
 from numpy import ndarray
 
+from src.domain.BookKeeper import BookKeeper
 from src.domain.Hands import Hand, Knuckle
 from src.domain.Labels import HandSignLabel, FingerGestureLabel
 from src.model.keypoint_classifier.keypoint_classifier import KeyPointClassifier
@@ -11,14 +12,13 @@ from src.model.point_history_classifier.point_history_classifier import PointHis
 
 
 class GestureReader:
-    history_length = 16
-
-    gesture_history: deque = deque(maxlen=history_length)
 
     def __init__(self,
+                 book_keeper: BookKeeper,
                  key_point_model_path='src/model/keypoint_classifier/keypoint_classifier.tflite',
                  point_history_model_path='src/model/point_history_classifier/point_history_classifier.tflite',
                  ):
+        self.book_keeper = book_keeper
         self.key_point_classifier = KeyPointClassifier(model_path=key_point_model_path)
         self.point_history_classifier = PointHistoryClassifier(model_path=point_history_model_path)
 
@@ -36,10 +36,9 @@ class GestureReader:
 
     def append_point_history(self, hand, hand_sign):
         if hand_sign == HandSignLabel.POINTER:
-            hand.point_history.append(hand.get_index())  # I suggest that this is magic number for index
+            self.book_keeper.push_index_location(hand.get_index())
         else:
-            hand.point_history.append(Knuckle(0.0, 0.0))
-
+            self.book_keeper.push_index_location(Knuckle(0.0, 0.0))
 
     def read_finger_gesture(self, hand: Hand) -> FingerGestureLabel:
         finger_gesture_id = 0
@@ -48,5 +47,5 @@ class GestureReader:
             finger_gesture_id = self.point_history_classifier(
                 hand.prepare_points_for_model())
 
-        self.gesture_history.append(finger_gesture_id)
-        return FingerGestureLabel(Counter(self.gesture_history).most_common()[0][0])
+        self.book_keeper.push_finger_gesture(finger_gesture_id)
+        return FingerGestureLabel(Counter(self.book_keeper.finger_gesture_history).most_common()[0][0])

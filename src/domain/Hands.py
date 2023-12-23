@@ -22,6 +22,8 @@ class Knuckle:
 class Hand:
     knuckles: list[Knuckle]
     handedness: Chirality
+
+    # todo: move to bookKeeper
     history_length = 16
     point_history: deque = deque(maxlen=history_length)
 
@@ -34,6 +36,8 @@ class Hand:
 
     def get_base(self) -> Knuckle:
         return self.knuckles[0]
+
+    # todo: move to gesture reader.
 
     def convert_to_relative_coordinates(self) -> list:
         relative_knuckle_list: list = []
