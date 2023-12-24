@@ -17,6 +17,12 @@ class Data:
     second: int = None
 
 
+class ControllerData(Data):
+    def __init__(self, number: int, value: int):
+        self.first = number
+        self.second = value
+
+
 class Midi:
 
     def __init__(self):
@@ -34,15 +40,15 @@ class Midi:
 
     def send_channel_message(self, status: Status, data: Data = None) -> None:
         msg = [status.message_type | status.channel, data.first]
-        print(msg)
         if data.second is not None:
             msg.append(data.second)
+        print(msg)
 
         self.midi_out.send_message(
             msg
         )
 
-    def send_control_change(self, data: Data) -> None:
+    def send_control_change(self, data: ControllerData) -> None:
         self.send_channel_message(
             Status(CONTROL_CHANGE, self.channel),
             data,
