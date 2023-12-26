@@ -24,10 +24,11 @@ class ScreenPrinter:
     ):
         image_array = image.image
         if hand is not None:
-            scaled_knuckles_as_np_array = self.scale_landmarks(image, hand.joints)
-            rectangle = self.calculate_bounding_rectangle(scaled_knuckles_as_np_array)
+            scaled_joints_as_np_array = self.scale_landmarks(hand.joints)
+
+            rectangle = self.calculate_bounding_rectangle(scaled_joints_as_np_array)
             image_array = self.draw_rectangle(image_array, rectangle)
-            image_array = self.draw_hand(image_array, scaled_knuckles_as_np_array)
+            image_array = self.draw_hand(image_array, scaled_joints_as_np_array)
             image_array = self.draw_info_text(image_array, hand, rectangle, hand_sign, finger_gesture)
             image_array = self.draw_point_history(image_array, index_location_history)
         image_array = self.draw_statistics(image_array, fps, mode, number)
@@ -47,16 +48,13 @@ class ScreenPrinter:
 
         return [x, y, x + w, y + h]
 
-    def scale_landmarks(self, image: Image, knuckles: list[Joint] | deque) -> np.ndarray:
+    def scale_landmarks(self, joints: list[Joint] | deque[Joint]) -> np.ndarray:
 
         landmark_array = np.empty((0, 2), int)
 
         # Keypoint
-        for knuckle in knuckles:
-            landmark_x = min(int(knuckle.x * image.width()), image.width() - 1)
-            landmark_y = min(int(knuckle.y * image.height()), image.height() - 1)
-
-            landmark_array = np.append(landmark_array, [np.array((landmark_x, landmark_y))], axis=0)
+        for joint in joints:
+            landmark_array = np.append(landmark_array, [np.array((joint.x, joint.y), int)], axis=0)
 
         return landmark_array
 
@@ -76,8 +74,9 @@ class ScreenPrinter:
 
         return image
 
-    def draw_point_history(self, image: np.ndarray, point_history: deque):
-        scaled_landmarks = self.scale_landmarks(Image(image), point_history)
+    def draw_point_history(self, image: np.ndarray, point_history: deque[Joint]):
+        scaled_landmarks = self.scale_landmarks(point_history)
+        print(f"point history: {scaled_landmarks}")
         for index, point in enumerate(scaled_landmarks):
             if point[0] != 0 and point[1] != 0:
                 cv.circle(image, point, 1 + int(index / 2),

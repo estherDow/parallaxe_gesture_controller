@@ -33,7 +33,8 @@ class HandsReader:
             hands_list.append(
                 Hand(
                     list(map(
-                        lambda n: Joint(x=n.x, y=n.y),
+                        lambda n: Joint(x=min(int(n.x * image.width()), image.width() - 1),
+                                        y=min(int(n.y * image.height()), image.height() - 1)),
                         hand_landmarks.landmark)),
                     Chirality(handednness.classification[0].label[0:])
                 )

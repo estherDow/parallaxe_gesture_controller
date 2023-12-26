@@ -11,9 +11,9 @@ class Chirality(Enum):
 
 @dataclass
 class Joint:
-    x: float
-    y: float
-    z: float = 0.0
+    x: int
+    y: int
+    z: int = 0
 
 
 # https://developers.google.com/mediapipe/solutions/vision/hand_landmarker
