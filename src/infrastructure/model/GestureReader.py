@@ -47,7 +47,8 @@ def prepare_for_model(hand: Hand) -> list:
 
 
 def prepare_points_for_model(index_location_history: deque[Joint], image: Image) -> list:
-    return flatten_list(convert_to_coordinates_relative_to_screen(index_location_history, image.width(), image.height()))
+    return flatten_list(
+        convert_to_coordinates_relative_to_screen(index_location_history, image.width(), image.height()))
 
 
 class GestureReader:
@@ -81,10 +82,9 @@ class GestureReader:
 
     def read_finger_gesture(self, image: Image) -> FingerGestureLabel:
         finger_gesture_id = 0
-        point_history_len = len(self.book_keeper.index_location_history)
-        if point_history_len == (self.book_keeper.index_location_history.maxlen.real * 2):
-            finger_gesture_id = self.point_history_classifier(
-                prepare_points_for_model(self.book_keeper.index_location_history, image))
+        prepared_point_history = prepare_points_for_model(self.book_keeper.index_location_history, image)
+        if len(prepared_point_history) == (self.book_keeper.history_length * 2):
+            finger_gesture_id = self.point_history_classifier(prepared_point_history)
         self.book_keeper.push_finger_gesture(finger_gesture_id)
-
+        print(finger_gesture_id)
         return FingerGestureLabel(Counter(self.book_keeper.finger_gesture_history).most_common()[0][0])

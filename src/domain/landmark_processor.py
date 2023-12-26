@@ -70,9 +70,10 @@ def pre_process_point_history(image_width, image_height, point_history):
 
 
 def log_data(mode: ApplicationMode, number: int, point_history_list, pre_processed_landmark_list):
-    match mode:
-        case ApplicationMode.LEARN_POINT_HISTORY:
-            log_point_history(number, point_history_list)
+    if 0 <= number <= 9:
+        match mode:
+            case ApplicationMode.LEARN_POINT_HISTORY:
+                log_point_history(number, point_history_list)
 
-        case ApplicationMode.LEARN_KEY_POINTS:
-            log_key_points(number, pre_processed_landmark_list)
+            case ApplicationMode.LEARN_KEY_POINTS:
+                log_key_points(number, pre_processed_landmark_list)

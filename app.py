@@ -4,7 +4,7 @@
 from src.application.application_mode import select_mode, ApplicationMode
 from src.application.initialize_application import initialize_application
 from src.domain.landmark_processor import log_data
-from src.infrastructure.model.GestureReader import prepare_for_model
+from src.infrastructure.model.GestureReader import prepare_for_model, prepare_points_for_model
 from src.infrastructure.openCV.Keys import get_key_press
 
 
@@ -38,7 +38,9 @@ def main():
                         debug_image, mode, fps, number, hand, gesture_reader.book_keeper.index_location_history,
                         hand_sign, finger_gesture)
 
-                    log_data(mode, number, gesture_reader.book_keeper.index_location_history, prepare_for_model(hand))
+                    log_data(mode, number,
+                             prepare_points_for_model(gesture_reader.book_keeper.index_location_history, image),
+                             prepare_for_model(hand))
 
                 elif mode == ApplicationMode.PLAY:
                     print("todo: implement midi")

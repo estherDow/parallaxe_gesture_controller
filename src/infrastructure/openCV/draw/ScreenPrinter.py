@@ -76,7 +76,6 @@ class ScreenPrinter:
 
     def draw_point_history(self, image: np.ndarray, point_history: deque[Joint]):
         scaled_landmarks = self.scale_landmarks(point_history)
-        print(f"point history: {scaled_landmarks}")
         for index, point in enumerate(scaled_landmarks):
             if point[0] != 0 and point[1] != 0:
                 cv.circle(image, point, 1 + int(index / 2),
