@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from src.infrastructure.midi.Midi import Midi, Data, ControllerData
+from src.infrastructure.midi.Midi import Midi, ControllerData
 
 
 class TrackState(Enum):

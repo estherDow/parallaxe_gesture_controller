@@ -3,7 +3,7 @@ from collections import deque
 import numpy as np
 from src.application.application_mode import ApplicationMode
 from src.application.opencv.Image import Image
-from src.domain.Hands import Hand, Knuckle
+from src.domain.Hands import Hand, Joint
 from src.domain.Labels import FingerGestureLabel, HandSignLabel
 from src.infrastructure.openCV.draw.draw_hand_landmarks import draw_landmarks
 import cv2 as cv
@@ -18,17 +18,18 @@ class ScreenPrinter:
             fps: int,
             number: int,
             hand: Hand = None,
+            index_location_history: deque[Joint] = None,
             hand_sign: HandSignLabel = None,
             finger_gesture: FingerGestureLabel = None,
     ):
         image_array = image.image
         if hand is not None:
-            scaled_knuckles_as_np_array = self.scale_landmarks(image, hand.knuckles)
+            scaled_knuckles_as_np_array = self.scale_landmarks(image, hand.joints)
             rectangle = self.calculate_bounding_rectangle(scaled_knuckles_as_np_array)
             image_array = self.draw_rectangle(image_array, rectangle)
             image_array = self.draw_hand(image_array, scaled_knuckles_as_np_array)
             image_array = self.draw_info_text(image_array, hand, rectangle, hand_sign, finger_gesture)
-            image_array = self.draw_point_history(image_array, hand.point_history)
+            image_array = self.draw_point_history(image_array, index_location_history)
         image_array = self.draw_statistics(image_array, fps, mode, number)
         self.show_frame(image_array)
 
@@ -46,7 +47,7 @@ class ScreenPrinter:
 
         return [x, y, x + w, y + h]
 
-    def scale_landmarks(self, image: Image, knuckles: list[Knuckle] | deque) -> np.ndarray:
+    def scale_landmarks(self, image: Image, knuckles: list[Joint] | deque) -> np.ndarray:
 
         landmark_array = np.empty((0, 2), int)
 

@@ -4,7 +4,7 @@ from collections import deque
 import mediapipe as mp
 
 from src.application.opencv.Image import Image
-from src.domain.Hands import Hands, Hand, Chirality, Knuckle
+from src.domain.Hands import Hands, Hand, Chirality, Joint
 
 
 class HandsReader:
@@ -33,7 +33,7 @@ class HandsReader:
             hands_list.append(
                 Hand(
                     list(map(
-                        lambda n: Knuckle(x=n.x, y=n.y),
+                        lambda n: Joint(x=n.x, y=n.y),
                         hand_landmarks.landmark)),
                     Chirality(handednness.classification[0].label[0:])
                 )

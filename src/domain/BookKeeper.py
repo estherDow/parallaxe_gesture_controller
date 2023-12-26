@@ -1,6 +1,6 @@
 from collections import deque
 
-from src.domain.Hands import Knuckle
+from src.domain.Hands import Joint
 from src.domain.Labels import FingerGestureLabel, HandSignLabel
 
 
@@ -11,7 +11,7 @@ class BookKeeper:
     index_location_history: deque = deque(maxlen=history_length)
     hand_sign_history: deque = deque(maxlen=history_length)
 
-    def push_index_location(self,knuckle: Knuckle):
+    def push_index_location(self, knuckle: Joint):
         self.index_location_history.append(knuckle)
 
     def push_finger_gesture(self, gesture: FingerGestureLabel):
