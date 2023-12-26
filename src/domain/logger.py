@@ -2,7 +2,7 @@ import copy
 import itertools
 
 from src.application.application_mode import ApplicationMode
-from src.application.keypoint_logger import log_point_history, log_key_points
+from src.application.logger import log_point_history, log_key_points
 
 
 def log_data(mode: ApplicationMode, number: int, point_history_list, pre_processed_landmark_list):
