@@ -2,7 +2,7 @@ import unittest
 
 from src.domain.BookKeeper import BookKeeper
 from src.domain.Labels import HandSignLabel
-from src.infrastructure.model.GestureReader import GestureReader
+from src.domain.GestureReader import GestureReader
 from test.HandsStub import should_create_hands
 
 

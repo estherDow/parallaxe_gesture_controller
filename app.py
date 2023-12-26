@@ -4,7 +4,7 @@
 from src.application.application_mode import select_mode, ApplicationMode
 from src.application.initialize_application import initialize_application
 from src.domain.logger import log_data
-from src.infrastructure.model.GestureReader import prepare_for_model, prepare_points_for_model
+from src.domain.GestureReader import prepare_for_model, prepare_points_for_model
 from src.infrastructure.openCV.Keys import get_key_press
 from src.infrastructure.openCV.draw.ScreenPrinter import print_screen
 

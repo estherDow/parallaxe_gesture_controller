@@ -2,7 +2,7 @@ from src.application.application_mode import ApplicationMode
 from src.domain.BookKeeper import BookKeeper
 from src.infrastructure.argument_parser import get_arguments
 from src.infrastructure.mediapipe.HandsReader import HandsReader
-from src.infrastructure.model.GestureReader import GestureReader
+from src.domain.GestureReader import GestureReader
 from src.infrastructure.openCV.video_capture.VideoCaptor import VideoCapture
 from src.utils import CvFpsCalc
 
