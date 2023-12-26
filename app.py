@@ -6,12 +6,13 @@ from src.application.initialize_application import initialize_application
 from src.domain.logger import log_data
 from src.infrastructure.model.GestureReader import prepare_for_model, prepare_points_for_model
 from src.infrastructure.openCV.Keys import get_key_press
+from src.infrastructure.openCV.draw.ScreenPrinter import print_screen
 
 
 def main():
     # Argument parsing #################################################################
     video_capture, cv_fps_calc, \
-        hands_reader, gesture_reader, screen_printer, mode = initialize_application()
+        hands_reader, gesture_reader, mode = initialize_application()
 
     while True:
         fps = cv_fps_calc.get()
@@ -34,7 +35,7 @@ def main():
                 hand_sign, finger_gesture = gesture_reader.read(hand, image)
 
                 if mode != ApplicationMode.PLAY:
-                    screen_printer.print_screen(
+                    print_screen(
                         debug_image, mode, fps, number, hand, gesture_reader.book_keeper.index_location_history,
                         hand_sign, finger_gesture)
 
@@ -47,7 +48,7 @@ def main():
         else:
             # gesture_reader.point_history.append(Knuckle(0, 0))
             if mode != ApplicationMode.PLAY:
-                screen_printer.print_screen(
+                print_screen(
                     debug_image, mode, fps, number)
 
     video_capture.destroy_windows()
