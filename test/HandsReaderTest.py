@@ -23,7 +23,6 @@ class HandsReaderTest(unittest.TestCase):
         expected_hands = should_create_hands()
 
         hands = self.hands_reader.get_hands(test_image)
-
         self.assertEqual(len(hands.hands_list[0].joints), 21)
         self.assertEqual(hands.hands_list[0].handedness, expected_hands.hands_list[0].handedness)
         self.assertEqual(hands.hands_list[0].get_base(), expected_hands.hands_list[0].get_base())
