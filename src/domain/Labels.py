@@ -2,14 +2,11 @@ from enum import Enum
 
 
 class HandSignLabel(Enum):
-    OPEN = 0
-    CLOSE = 1
-    POINTER = 2
-    OK = 3
-    PEACE = 4
-    TEST = 5
-    KOREAN_HEART = 6
-    KOREAN_RAGE = 7
+    G1 = 0
+    G2 = 1
+    G3 = 2
+    G4 = 3
+    G5 = 4
 
 
 class FingerGestureLabel(Enum):

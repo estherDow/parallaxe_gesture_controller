@@ -1,7 +1,7 @@
-import itertools
-from collections import deque
 from dataclasses import dataclass
 from enum import Enum
+
+from src.domain.Labels import HandSignLabel, FingerGestureLabel
 
 
 class Chirality(Enum):
@@ -21,10 +21,6 @@ class Hand:
     joints: list[Joint]
     handedness: Chirality
 
-    # todo: move to bookKeeper
-    history_length = 16
-    point_history: deque = deque(maxlen=history_length)
-
     def __init__(self, joints: list[Joint], handedness: Chirality):
         self.joints = joints
         self.handedness = handedness
@@ -34,6 +30,14 @@ class Hand:
 
     def get_base(self) -> Joint:
         return self.joints[0]
+
+
+@dataclass
+class Gesture:
+    handedness: Chirality
+    hand_sign: HandSignLabel = None
+    finger_gesture: FingerGestureLabel = None
+
 
 @dataclass
 class Hands:

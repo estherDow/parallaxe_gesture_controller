@@ -1,4 +1,3 @@
-import pickle
 import unittest
 import cv2 as cv
 

@@ -3,6 +3,7 @@
 
 from src.application.application_mode import select_mode, ApplicationMode
 from src.application.initialize_application import initialize_application
+from src.domain.GestureRules import apply_rules
 from src.domain.logger import log_data
 from src.domain.GestureReader import prepare_for_model, prepare_points_for_model
 from src.infrastructure.openCV.Keys import get_key_press
@@ -30,23 +31,24 @@ def main():
         processable_image.image.flags.writeable = True
 
         if hands is not None:
+            gestures = gesture_reader.read(hands, image)
 
-            for hand in hands.hands_list:
-                hand_sign, finger_gesture = gesture_reader.read(hand, image)
+            if mode != ApplicationMode.PLAY:
 
-                if mode != ApplicationMode.PLAY:
+                for hand, gesture in zip(hands.hands_list, gestures):
+
                     print_screen(
                         debug_image, mode, fps, number, hand, gesture_reader.book_keeper.index_location_history,
-                        hand_sign, finger_gesture)
+                        gesture.hand_sign, gesture.finger_gesture)
 
                     log_data(mode, number,
                              prepare_points_for_model(gesture_reader.book_keeper.index_location_history, image),
                              prepare_for_model(hand))
+                print(apply_rules(gestures))
 
-                elif mode == ApplicationMode.PLAY:
-                    print("todo: implement midi")
+            elif mode == ApplicationMode.PLAY:
+                print(apply_rules(gestures))
         else:
-            # gesture_reader.point_history.append(Knuckle(0, 0))
             if mode != ApplicationMode.PLAY:
                 print_screen(
                     debug_image, mode, fps, number)

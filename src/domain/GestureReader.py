@@ -3,7 +3,7 @@ from collections import deque, Counter
 
 from src.application.opencv.Image import Image
 from src.domain.BookKeeper import BookKeeper
-from src.domain.Hands import Hand, Joint
+from src.domain.Hands import Hand, Joint, Hands, Gesture
 from src.domain.Labels import HandSignLabel, FingerGestureLabel
 from src.model.keypoint_classifier.keypoint_classifier import KeyPointClassifier
 from src.model.point_history_classifier.point_history_classifier import PointHistoryClassifier
@@ -62,11 +62,14 @@ class GestureReader:
         self.key_point_classifier = KeyPointClassifier(model_path=key_point_model_path)
         self.point_history_classifier = PointHistoryClassifier(model_path=point_history_model_path)
 
-    def read(self, hand: Hand, image: Image) -> tuple[HandSignLabel, FingerGestureLabel]:
-        hand_sign = self.read_hand_sign(hand)
-        self.append_point_history(hand, hand_sign)
-        finger_gesture = self.read_finger_gesture(image)
-        return hand_sign, finger_gesture
+    def read(self, hands: Hands, image: Image) -> list[Gesture]:
+        gestures = []
+        for hand in hands.hands_list:
+            hand_sign = self.read_hand_sign(hand)
+            self.append_point_history(hand, hand_sign)
+            finger_gesture = self.read_finger_gesture(image)
+            gestures.append(Gesture(hand.handedness, hand_sign, finger_gesture))
+        return gestures
 
     def read_hand_sign(self,
                        hand: Hand,
@@ -75,7 +78,7 @@ class GestureReader:
         return self.key_point_classifier(prepare_for_model(hand))
 
     def append_point_history(self, hand, hand_sign: HandSignLabel):
-        if hand_sign == HandSignLabel.POINTER:
+        if hand_sign == HandSignLabel.G1:
             self.book_keeper.push_index_location(hand.get_index())
         else:
             self.book_keeper.push_index_location(Joint(0.0, 0.0))
@@ -86,5 +89,4 @@ class GestureReader:
         if len(prepared_point_history) == (self.book_keeper.history_length * 2):
             finger_gesture_id = self.point_history_classifier(prepared_point_history)
         self.book_keeper.push_finger_gesture(finger_gesture_id)
-        print(finger_gesture_id)
         return FingerGestureLabel(Counter(self.book_keeper.finger_gesture_history).most_common()[0][0])
